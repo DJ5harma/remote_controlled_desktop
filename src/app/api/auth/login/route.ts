@@ -8,7 +8,6 @@ import USER from "@/models/USER.MODEL";
 export const POST = async (req: NextRequest) => {
 	try {
 		const { password, email } = await req.json();
-		console.log({ password, email });
 
 		await dbConnect();
 		const user = await USER.findOne({ email });

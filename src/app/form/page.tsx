@@ -27,8 +27,11 @@ export default function Form() {
 				if (formData.password !== formData.confirmPassword)
 					throw new Error("Passwords must match");
 			}
+
+			console.log({ formType });
+
 			const { errMessage, user } = (
-				await axios.post("/api/auth/register", { hi: "hi" })
+				await axios.post(`/api/auth/${formType.toLowerCase()}`, formData)
 			).data;
 			toast.dismiss();
 			if (errMessage) throw new Error(errMessage);
