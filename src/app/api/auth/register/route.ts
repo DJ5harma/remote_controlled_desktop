@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import USER from "@/models/USER.MODEL";
-
 export const POST = async (req: NextRequest) => {
 	try {
 		const { username, password, email, confirmPassword } = await req.json();
+		if (!username || !email)
+			throw new Error("Please enter all the credentials!");
 		if (password.length < 6) throw new Error("Password too short");
 		if (password !== confirmPassword) throw new Error("Passwords must match");
 
@@ -20,8 +21,11 @@ export const POST = async (req: NextRequest) => {
 			username,
 			hashedPassword,
 			email,
+			friends: [],
 		});
-		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
+		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!, {
+			expiresIn: 1000 * 60 * 60 * 24, // 1day
+		});
 		cookies().set("token", token);
 		await user.save();
 		return NextResponse.json({

@@ -8,13 +8,16 @@ import USER from "@/models/USER.MODEL";
 export const POST = async (req: NextRequest) => {
 	try {
 		const { password, email } = await req.json();
-
+		if (!password || !email)
+			throw new Error("Please enter all the credentials!");
 		await dbConnect();
 		const user = await USER.findOne({ email });
 		if (!user) throw new Error("Email not registered");
 		if (!bcrypt.compareSync(password, user.hashedPassword))
 			throw new Error("Wrong password");
-		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
+		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!, {
+			expiresIn: 1000 * 60 * 60 * 24, // 1day
+		});
 		cookies().set("token", token);
 
 		console.log({ user });
@@ -25,6 +28,7 @@ export const POST = async (req: NextRequest) => {
 				_id: user._id,
 				username: user.username,
 				email,
+				friends: user.friends,
 			},
 		});
 	} catch (error) {
