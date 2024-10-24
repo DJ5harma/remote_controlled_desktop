@@ -13,12 +13,14 @@ const io = new Server(server, {
 		methods: ["GET", "POST"],
 	},
 });
+let clients = 0;
 
 app.use(cors());
 
 io.on("connection", (socket) => {
 	socket.emit("hi");
-	console.log("New client connected: " + socket.id);
+	clients++;
+	console.log("New client connected: " + clients + " " + socket.id);
 
 	socket.on("offer", (offer) => {
 		socket.broadcast.emit("offer", offer);
@@ -33,7 +35,8 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("disconnect", () => {
-		console.log("Client disconnected");
+		clients--;
+		console.log("Client disconnected: " + clients + " " + socket.id);
 	});
 });
 

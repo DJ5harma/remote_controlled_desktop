@@ -1,7 +1,6 @@
 "use client";
 import { hardCodedUser } from "@/lib/hardcoded";
 import { IUser } from "@/lib/types";
-import { getSocket } from "@/socketClient/socket";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, {
@@ -12,7 +11,6 @@ import React, {
 	useEffect,
 	useState,
 } from "react";
-import toast from "react-hot-toast";
 const context = createContext<{
 	user: IUser;
 	setUser: Dispatch<SetStateAction<IUser>>;
@@ -32,8 +30,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	}
 	useEffect(() => {
 		autoLogin();
-		const skt = getSocket();
-		skt.on("hi", () => toast("Socket connected to server"));
 	}, []);
 
 	return (

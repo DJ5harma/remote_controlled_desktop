@@ -6,8 +6,8 @@ export default function Home() {
 			<Link href={"/form"}>
 				<button>Account Form</button>
 			</Link>
-			<Link href={"/videoCall"}>
-				<button>Video call</button>
+			<Link href={"/shareScreen"}>
+				<button>Share Screen</button>
 			</Link>
 		</section>
 	);
