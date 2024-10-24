@@ -23,9 +23,7 @@ export const POST = async (req: NextRequest) => {
 			email,
 			friends: [],
 		});
-		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!, {
-			expiresIn: 1000 * 60 * 60 * 24, // 1day
-		});
+		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
 		cookies().set("token", token);
 		await user.save();
 		return NextResponse.json({

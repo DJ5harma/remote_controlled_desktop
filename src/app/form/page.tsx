@@ -2,6 +2,7 @@
 import { IFormData, IFormType } from "@/lib/types";
 import { useUser } from "@/providers/UserProvider";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,6 +17,8 @@ export default function Form() {
 		password: "",
 	});
 
+	const router = useRouter();
+
 	async function handleAction() {
 		toast.loading("Computing your request...");
 		try {
@@ -28,8 +31,6 @@ export default function Form() {
 					throw new Error("Passwords must match");
 			}
 
-			console.log({ formType });
-
 			const { errMessage, user } = (
 				await axios.post(`/api/auth/${formType.toLowerCase()}`, formData)
 			).data;
@@ -37,6 +38,8 @@ export default function Form() {
 			if (errMessage) throw new Error(errMessage);
 			setUser(user);
 			toast.success(`${formType} action complete!`);
+
+			router.replace("/");
 		} catch (error) {
 			toast.dismiss();
 			toast.error((error as Error).message);

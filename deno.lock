@@ -2506,6 +2506,7 @@
         "npm:bcryptjs@^2.4.3",
         "npm:eslint-config-next@14.2.16",
         "npm:eslint@8",
+        "npm:jose@^5.9.6",
         "npm:jsonwebtoken@^9.0.2",
         "npm:mongoose@^8.7.2",
         "npm:next-auth@^4.24.8",

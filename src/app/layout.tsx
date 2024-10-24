@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { UserProvider } from "@/providers/UserProvider";
+import Nav from "@/components/Nav";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -41,14 +43,16 @@ export default function RootLayout({
 						},
 					}}
 				/>
+				<Nav />
 				<section
 					style={{
 						backgroundImage:
 							"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
+						minHeight: "90vh",
 					}}
-					className="w-screen h-screen"
+					className="w-screen"
 				>
-					{children}
+					<UserProvider>{children}</UserProvider>
 				</section>
 			</body>
 		</html>

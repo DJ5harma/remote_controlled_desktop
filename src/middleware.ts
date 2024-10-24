@@ -13,7 +13,7 @@ export async function middleware(req: NextRequest) {
 		const { payload } = await jwtVerify(token, secretKeyUint8);
 
 		const res = NextResponse.next();
-		res.headers.set("user_id", (payload as { user_id: string }).user_id);
+		res.cookies.set("user_id", (payload as { user_id: string }).user_id);
 		return res;
 	} catch (error) {
 		if ((error as Error).name === "TokenExpiredError") {

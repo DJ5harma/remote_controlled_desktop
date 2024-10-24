@@ -15,9 +15,7 @@ export const POST = async (req: NextRequest) => {
 		if (!user) throw new Error("Email not registered");
 		if (!bcrypt.compareSync(password, user.hashedPassword))
 			throw new Error("Wrong password");
-		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!, {
-			expiresIn: 1000 * 60 * 60 * 24, // 1day
-		});
+		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
 		cookies().set("token", token);
 
 		console.log({ user });
@@ -30,6 +28,23 @@ export const POST = async (req: NextRequest) => {
 				email,
 				friends: user.friends,
 			},
+		});
+	} catch (error) {
+		return NextResponse.json({
+			errMessage: (error as Error).message || "Internal server error",
+		});
+	}
+};
+export const GET = async (req: NextRequest) => {
+	try {
+		const user_id = req.cookies.get("user_id")?.value;
+
+		if (!user_id) throw new Error("user_id wasn't set");
+		await dbConnect();
+		const user = await USER.findById(user_id).select("-hashedPassword");
+		if (!user) throw new Error("User not found");
+		return NextResponse.json({
+			user,
 		});
 	} catch (error) {
 		return NextResponse.json({
