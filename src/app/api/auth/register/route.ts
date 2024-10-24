@@ -31,6 +31,7 @@ export const POST = async (req: NextRequest) => {
 				_id: user._id,
 				username,
 				email,
+				friends: user.friends,
 			},
 		});
 	} catch (error) {

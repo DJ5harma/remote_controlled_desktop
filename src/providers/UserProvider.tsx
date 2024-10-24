@@ -23,9 +23,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<IUser>(hardCodedUser);
 	const router = useRouter();
 	async function autoLogin() {
-		const { errMessage, user } = (await axios.get(`/api/auth/login`)).data;
+		const { user, errMessage } = (await axios.get(`/api/auth/login`)).data;
+		console.log(user);
+
 		if (errMessage) return router.replace("/form");
-		setUser(user);
+		setUser((p) => ({ ...p, ...user }));
 	}
 	useEffect(() => {
 		autoLogin();

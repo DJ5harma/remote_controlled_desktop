@@ -44,7 +44,12 @@ export const GET = async (req: NextRequest) => {
 		const user = await USER.findById(user_id).select("-hashedPassword");
 		if (!user) throw new Error("User not found");
 		return NextResponse.json({
-			user,
+			user: {
+				_id: user._id,
+				username: user.username,
+				email: user.email,
+				friends: user.friends,
+			},
 		});
 	} catch (error) {
 		return NextResponse.json({

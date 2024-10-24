@@ -43,17 +43,19 @@ export default function RootLayout({
 						},
 					}}
 				/>
-				<Nav />
-				<section
-					style={{
-						backgroundImage:
-							"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
-						minHeight: "90vh",
-					}}
-					className="w-screen"
-				>
-					<UserProvider>{children}</UserProvider>
-				</section>
+				<UserProvider>
+					<Nav />
+					<section
+						style={{
+							backgroundImage:
+								"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
+							minHeight: "90vh",
+						}}
+						className="w-screen"
+					>
+						{children}
+					</section>
+				</UserProvider>
 			</body>
 		</html>
 	);

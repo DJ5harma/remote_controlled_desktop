@@ -47,7 +47,7 @@ export default function Form() {
 	}
 
 	return (
-		<>
+		<section className="h-screen">
 			<section className="gap-2 py-4 px-6 rounded-3xl bg-white shadow-2xl">
 				<h1>Remote Desktop</h1>
 				{formType === "Register" && (
@@ -90,6 +90,6 @@ export default function Form() {
 			>
 				Or {formType === "Login" ? "Register!" : "Login!"}
 			</p>
-		</>
+		</section>
 	);
 }
