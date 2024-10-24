@@ -19,12 +19,13 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+*/
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-} */
+	.text-balance {
+		text-wrap: balance;
+	}
+}
 * {
 	font-family: monospace;
 	font-size: 22px;
@@ -45,9 +46,13 @@ button {
 	border: solid;
 	padding: 14px;
 	border-radius: 15px;
+	background-image: linear-gradient(to top, rgb(255, 120, 200), white);
 }
 input {
 	outline: none;
+}
+button:hover {
+	animation: grow 1s forwards;
 }
 
 @keyframes grow {
@@ -60,10 +65,4 @@ input {
 	100% {
 		padding: 14px;
 	}
-}
-
-button:hover {
-	background-color: black;
-	color: white;
-	animation: grow 1s forwards;
 }

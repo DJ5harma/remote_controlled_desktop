@@ -11,7 +11,6 @@ import React, {
 	useEffect,
 	useState,
 } from "react";
-
 const context = createContext<{
 	user: IUser;
 	setUser: Dispatch<SetStateAction<IUser>>;
