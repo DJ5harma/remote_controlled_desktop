@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/providers/UserProvider";
 import Nav from "@/components/Nav";
-import ClientSocketProvider from "@/providers/ClientSocketProvider";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -45,19 +44,17 @@ export default function RootLayout({
 					}}
 				/>
 				<UserProvider>
-					<ClientSocketProvider>
-						<Nav />
-						<section
-							style={{
-								backgroundImage:
-									"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
-								height: "90vh",
-							}}
-							className="w-screen border-4 border-purple-900 [&>*]:w-full [&>*]:h-full"
-						>
-							{children}
-						</section>
-					</ClientSocketProvider>
+					<Nav />
+					<section
+						style={{
+							backgroundImage:
+								"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
+							height: "90vh",
+						}}
+						className="w-screen border-4 border-purple-900 [&>*]:w-full [&>*]:h-full"
+					>
+						{children}
+					</section>
 				</UserProvider>
 			</body>
 		</html>
