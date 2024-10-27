@@ -4,12 +4,15 @@ import { jwtVerify } from "jose";
 
 export async function middleware(req: NextRequest) {
 	const token = req.cookies.get("token")?.value;
+	// console.log({ token });
 
 	if (!token) return NextResponse.redirect(new URL("/form", req.url));
 
 	try {
 		const secretKeyUint8 = new TextEncoder().encode(process.env.JWT_SECRET!);
-		await jwtVerify(token, secretKeyUint8);
+		const { payload } = await jwtVerify(token, secretKeyUint8);
+		console.log({ payload });
+
 		return NextResponse.next();
 	} catch (error) {
 		if ((error as Error).name === "TokenExpiredError")

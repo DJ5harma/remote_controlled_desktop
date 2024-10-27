@@ -1,6 +1,6 @@
 "use client";
-import { useRoom } from "@/providers/RoomProvider";
-import { useSocket } from "@/providers/SocketProvider";
+import { socket } from "@/providers/SocketProvider";
+// import { useRoom } from "@/providers/RoomProvider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,25 +9,27 @@ export default function Page() {
 	const [newRoomId, setNewRoomId] = useState("");
 	const [enteredId, setEnteredId] = useState("");
 
-	const { setRoom } = useRoom();
-	const socket = useSocket();
+	// const { setRoom } = useRoom();
 
 	useEffect(() => {
-		if (!socket) return;
+		socket.on("incoming-new-room-id", (roomId) => {
+			console.log({ roomId });
 
-		socket.on("incoming-new-room-id", (roomId) => setNewRoomId(roomId));
-
+			setNewRoomId(roomId);
+		});
 		return () => {
-			socket?.removeAllListeners();
+			socket.removeAllListeners();
 		};
-	}, [socket]);
+	}, []);
 
 	function createRoom() {
+		console.log({ socket });
+
 		socket?.emit("create-room");
 	}
 
 	function joinRoom(roomId: string) {
-		setRoom((p) => ({ ...p, roomId }));
+		// setRoom((p) => ({ ...p, roomId }));
 		router.push(`room/${roomId}`);
 	}
 

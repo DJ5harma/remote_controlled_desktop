@@ -6,7 +6,7 @@ export default function Home() {
 			<Link href={"/form"}>
 				<button>Account Form</button>
 			</Link>
-			<Link href={"/videoRoom"}>
+			<Link href={"/room"}>
 				<button>Video Room</button>
 			</Link>
 		</section>

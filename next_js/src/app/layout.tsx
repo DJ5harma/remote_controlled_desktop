@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/providers/UserProvider";
 import Nav from "@/components/Nav";
 import { RoomProvider } from "@/providers/RoomProvider";
-import SocketProvider from "@/providers/SocketProvider";
+// import SocketProvider from "@/providers/SocketProvider";
 // import SocketProvider from "@/providers/SocketProvider";
 
 const geistSans = localFont({
@@ -48,19 +48,19 @@ export default function RootLayout({
 				/>
 				<UserProvider>
 					<RoomProvider>
-						<SocketProvider>
-							<Nav />
+						<>
 							<section
 								style={{
 									backgroundImage:
 										"linear-gradient(to right, rgb(150, 0, 255), rgb(255, 0, 150))",
-									height: "90vh",
+									height: "100vh",
 								}}
 								className="w-screen border-4 border-purple-900 [&>*]:w-full [&>*]:h-full"
 							>
+								<Nav />
 								{children}
 							</section>
-						</SocketProvider>
+						</>
 					</RoomProvider>
 				</UserProvider>
 			</body>

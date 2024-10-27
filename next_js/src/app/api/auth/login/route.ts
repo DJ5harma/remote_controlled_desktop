@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest) => {
 
 		delete user.hashedPassword;
 		cookies().set("token", token);
-		cookies().set("user", user);
+		cookies().set("user_id", user._id);
 
 		return NextResponse.json({
 			user,
@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
 };
 export const GET = async (req: NextRequest) => {
 	try {
-		const user_id = req.cookies.get("user_id")?.value;
+		const user_id = req.cookies.get("user_id").value;
 
 		if (!user_id) throw new Error("user_id wasn't set");
 		await dbConnect();
