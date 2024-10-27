@@ -1,19 +1,5 @@
 import { Server } from "socket.io";
-import dotenv from "dotenv";
 import { v7 as uuid } from "uuid";
-
-dotenv.config();
-interface NUser {
-	_id: string;
-	username: string;
-	email: string;
-}
-
-interface NRoom {
-	Peer1?: NUser;
-	Peer2?: NUser;
-	roomId: string;
-}
 
 const PORT = 3001;
 const io = new Server({
