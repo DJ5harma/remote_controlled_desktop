@@ -25,6 +25,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const autoLogin = useCallback(async () => {
 		const { user, errMessage } = (await axios.get(`/api/auth/login`)).data;
+		console.log({ errMessage });
 
 		if (errMessage) return router.replace("/form");
 		setUser((p) => ({ ...p, ...user }));

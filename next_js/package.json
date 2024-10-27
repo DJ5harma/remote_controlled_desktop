@@ -16,8 +16,10 @@
     "mongoose": "^8.7.2",
     "next": "14.2.16",
     "next-auth": "^4.24.8",
+    "re-resizable": "^6.10.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-draggable": "^4.4.6",
     "react-hot-toast": "^2.4.1",
     "remote_controlled_desktop": "file:",
     "socket.io-client": "^4.8.0"

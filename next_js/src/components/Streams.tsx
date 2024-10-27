@@ -1,7 +1,10 @@
 "use client";
 import { iceServers } from "@/lib/hardcoded";
 import { socket } from "@/providers/SocketProvider";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import VideoContainer from "./VideoContainer";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Streams({
 	didIWin,
@@ -10,6 +13,7 @@ export default function Streams({
 	didIWin: boolean;
 	roomId: string;
 }) {
+	const router = useRouter();
 	let localStream: MediaStream;
 
 	const localVideoElement = useRef<HTMLVideoElement>(null);
@@ -50,6 +54,7 @@ export default function Streams({
 	}
 
 	useEffect(() => {
+		console.log("srcObj: " + remoteVideoElement.current.srcObject);
 		// if(didIWin)
 		createPeerConnection()
 			.then(() => startMyVideo())
@@ -85,34 +90,27 @@ export default function Streams({
 			await pc?.addIceCandidate(iceCandidate); // check for new RTCIceCandidate(iceCandidate)
 			console.log("ice-candidate arrived", iceCandidate);
 		});
+		socket.on("i-am-leaving", () => endCall());
 
 		return () => {
-			pc.close();
 			socket.removeAllListeners();
 		};
 	}, []);
+	function endCall() {
+		remoteVideoElement.current.srcObject = null;
+		localVideoElement.current.srcObject = null;
+		pc.close();
+		router.push("/room");
+		toast("Call was ended!");
+	}
 	return (
-		<section className="[&>video]:w-56">
-			<video
-				src=""
-				ref={localVideoElement}
-				className="border-2 border-white"
-				playsInline
-				autoPlay
-			>
-				<track kind="captions" />
-			</video>
-			<video
-				src=""
-				ref={remoteVideoElement}
-				className="border-2 border-white"
-				playsInline
-				autoPlay
-			>
-				<track kind="captions" />
-			</video>
-			<div>
-				<button className="bg-green-700" onClick={startCall}>
+		<section>
+			<div className="flex flex-row">
+				<VideoContainer videoElement={localVideoElement} />
+				<VideoContainer videoElement={remoteVideoElement} />
+			</div>
+			<div className="absolute bottom-5 right-5">
+				<button className="bg-green-700" onClick={endCall}>
 					End Call
 				</button>
 				{/* <a href="/">
