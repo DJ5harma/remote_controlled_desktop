@@ -16,18 +16,14 @@ export const POST = async (req: NextRequest) => {
 		if (!bcrypt.compareSync(password, user.hashedPassword))
 			throw new Error("Wrong password");
 		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
-		cookies().set("token", token);
-
-		console.log({ user });
-
 		await user.save();
+
+		delete user.hashedPassword;
+		cookies().set("token", token);
+		cookies().set("user", user);
+
 		return NextResponse.json({
-			user: {
-				_id: user._id,
-				username: user.username,
-				email,
-				friends: user.friends,
-			},
+			user,
 		});
 	} catch (error) {
 		return NextResponse.json({

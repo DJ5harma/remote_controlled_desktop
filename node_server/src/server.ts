@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
+import { v7 as uuid } from "uuid";
 
 dotenv.config();
 const app = express();
@@ -13,35 +14,77 @@ const io = new Server(server, {
 		methods: ["GET", "POST"],
 	},
 });
-let clients = 0;
 
 app.use(cors());
 
+interface NRoom {
+	Peer1?: Object;
+	Peer2?: Object;
+	roomId: string;
+}
+const roomMap = new Map<string, NRoom>(); // roomId -> joiners{}
+
+let clients = 0;
 io.on("connection", (socket) => {
-	socket.emit("hi");
 	clients++;
-	console.log("New client connected: " + clients + " " + socket.id);
+	console.log({ clients });
 
-	socket.on("offer", (offer) => {
-		socket.broadcast.emit("offer", offer);
+	socket.on("create-room", () => {
+		const newRoomId = uuid();
+		roomMap.set(newRoomId, { roomId: newRoomId });
+		socket.emit("incoming-new-room-id", newRoomId);
+	});
+	socket.on("joined-room", ({ roomId, user }) => {
+		const room = roomMap.get(roomId);
+		if (!room)
+			return socket
+				.to(socket.id)
+				.emit("error", "Room with provided id doesn't exist");
+		if (!room.Peer1) room.Peer1 = user;
+		else if (!room.Peer2) room.Peer2 = user;
+		else
+			return socket
+				.to(socket.id)
+				.emit("error", "Room already has two (max) Peers");
+
+		roomMap.set(roomId, room);
+		socket.join(roomId);
+		socket.to(roomId).emit("room-update", room);
 	});
 
-	socket.on("answer", (answer) => {
-		socket.broadcast.emit("answer", answer);
+	socket.on("my-offerD", ({ offerD, room }) => {
+		// console.log("new offerD");
+		socket.broadcast.to(room).emit("incoming-offerD", offerD);
+	});
+	socket.on("my-answerD", ({ answerD, room }) => {
+		// console.log("new answerD");
+		socket.broadcast.to(room).emit("incoming-answerD", answerD);
+	});
+	socket.on("my-ice-candidate", ({ iceCandidate, room }) => {
+		// console.log("ice-candidate arrived");
+		socket.broadcast.to(room).emit("incoming-ice-candidate", iceCandidate);
 	});
 
-	socket.on("ice-candidate", (candidate) => {
-		socket.broadcast.emit("ice-candidate", candidate);
+	socket.on("leave-room", ({ roomId, user }) => {
+		const room = roomMap.get(roomId);
+		if (!room || (room.Peer1 !== user && room.Peer2 !== user)) return;
+
+		if (room.Peer1 === user) room.Peer1 = undefined;
+		else if (room.Peer2 === user) room.Peer2 = undefined;
+		else return;
+		socket.leave(roomId);
+
+		roomMap.set(roomId, room);
+		socket.to(roomId).emit("i-am-leaving", room);
 	});
 
 	socket.on("disconnect", () => {
 		clients--;
-		console.log("Client disconnected: " + clients + " " + socket.id);
+		console.log({ clients });
 	});
 });
 
-const PORT = process.env.PORT || 5000;
-
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
 	console.log(`node_server is running on ${PORT}`);
 });

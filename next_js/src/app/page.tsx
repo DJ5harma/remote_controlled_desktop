@@ -6,8 +6,8 @@ export default function Home() {
 			<Link href={"/form"}>
 				<button>Account Form</button>
 			</Link>
-			<Link href={"/shareScreen"}>
-				<button>Share Screen</button>
+			<Link href={"/videoRoom"}>
+				<button>Video Room</button>
 			</Link>
 		</section>
 	);

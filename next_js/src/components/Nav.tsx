@@ -12,7 +12,7 @@ export default function Nav() {
 			style={{ height: "10vh" }}
 		>
 			<h1>Remote Desktop</h1>
-			<p>{user.username}</p>
+			<p>{user ? user.username : "Loading..."}</p>
 		</nav>
 	);
 }

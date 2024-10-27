@@ -24,15 +24,13 @@ export const POST = async (req: NextRequest) => {
 			friends: [],
 		});
 		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET!);
+
+		delete user.hashedPassword;
 		cookies().set("token", token);
-		await user.save();
+		cookies().set("user", user);
+
 		return NextResponse.json({
-			user: {
-				_id: user._id,
-				username,
-				email,
-				friends: user.friends,
-			},
+			user,
 		});
 	} catch (error) {
 		return NextResponse.json({

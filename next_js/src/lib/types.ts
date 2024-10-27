@@ -5,17 +5,25 @@ export interface IFormData {
 	password: string;
 	confirmPassword: string;
 }
-export interface IViewer {
-	_id: string;
-	username: string;
-	canModify: boolean;
-	canSpeak: boolean;
-}
-export interface IUser {
-	_id: string;
-	username: string;
-	email: string;
-	friends: IViewer[];
-	viewers: IViewer[];
-	sessionPassword: string;
-}
+
+export type NUser =
+	| {
+			_id: string;
+			username: string;
+			email: string;
+	  }
+	| undefined;
+
+export type NRoom =
+	| {
+			Peer1?: NUser;
+			Peer2?: NUser;
+			roomId?: string;
+	  }
+	| undefined;
+
+export type IUser =
+	| (NUser & {
+			friends: NUser[];
+	  })
+	| undefined;

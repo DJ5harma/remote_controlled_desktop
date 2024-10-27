@@ -1,5 +1,4 @@
 "use client";
-import { hardCodedUser } from "@/lib/hardcoded";
 import { IUser } from "@/lib/types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -15,13 +14,14 @@ const context = createContext<{
 	user: IUser;
 	setUser: Dispatch<SetStateAction<IUser>>;
 }>({
-	user: hardCodedUser,
+	user: undefined,
 	setUser: () => {},
 });
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-	const [user, setUser] = useState<IUser>(hardCodedUser);
+	const [user, setUser] = useState<IUser>(undefined);
 	const router = useRouter();
 	async function autoLogin() {
+		console.log(document.cookie);
 		const { user, errMessage } = (await axios.get(`/api/auth/login`)).data;
 		console.log(user);
 
