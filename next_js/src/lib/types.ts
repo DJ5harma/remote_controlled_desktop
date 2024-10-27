@@ -14,14 +14,6 @@ export type NUser =
 	  }
 	| undefined;
 
-export type NRoom =
-	| {
-			Peer1?: NUser;
-			Peer2?: NUser;
-			roomId?: string;
-	  }
-	| undefined;
-
 export type IUser =
 	| (NUser & {
 			friends: NUser[];

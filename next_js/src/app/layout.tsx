@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "@/providers/UserProvider";
 import Nav from "@/components/Nav";
-import { RoomProvider } from "@/providers/RoomProvider";
 // import SocketProvider from "@/providers/SocketProvider";
 // import SocketProvider from "@/providers/SocketProvider";
 
@@ -47,7 +46,7 @@ export default function RootLayout({
 					}}
 				/>
 				<UserProvider>
-					<RoomProvider>
+					<>
 						<>
 							<section
 								style={{
@@ -61,7 +60,7 @@ export default function RootLayout({
 								{children}
 							</section>
 						</>
-					</RoomProvider>
+					</>
 				</UserProvider>
 			</body>
 		</html>

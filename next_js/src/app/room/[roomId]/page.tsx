@@ -1,11 +1,11 @@
 "use client";
-import { NRoom, NUser } from "@/lib/types";
-import { useRoom } from "@/providers/RoomProvider";
+import Streams from "@/components/Streams";
+import { NUser } from "@/lib/types";
 import { socket } from "@/providers/SocketProvider";
 import { useUser } from "@/providers/UserProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+// import Streams from "./Streams";
 // import toast from "react-hot-toast";
-import Streams from "./Streams";
 
 export default function Page({
 	params: { roomId },
@@ -13,60 +13,46 @@ export default function Page({
 	params: { roomId: string };
 }) {
 	const { user } = useUser();
-	const { room, setRoom } = useRoom();
 
 	const [myPeer, setMyPeer] = useState<NUser>(null);
 	const [didIWin, setDidIWin] = useState(false);
 
-	const registerRoom = useCallback(
-		(room: NRoom) => {
-			console.log("peer joined");
-			const otherPeer: NUser =
-				room.Peer1._id === user._id ? room.Peer2 : room.Peer1;
-			console.log({ otherPeer });
-
-			setMyPeer({ ...otherPeer });
-			setRoom({ ...room });
-		},
-		[setRoom, user._id]
-	);
-
 	useEffect(() => {
 		if (!user) return;
-
 		socket.emit("joined-room", {
 			roomId,
-			user: { ...user, friends: undefined },
+			user,
 		});
-		socket.on("loser-joined", (room: NRoom) => {
-			registerRoom(room);
+		socket.on("new-user-joined", (userE: NUser) => {
+			//mai jeeta
+			setMyPeer({ ...userE });
+			socket.emit("introduce-me", { roomId, user });
+			console.log("I am offerer: Peer is ", userE.username);
 			setDidIWin(true);
 		});
-		socket.on("winner-was", (room: NRoom) => {
-			registerRoom(room);
+		socket.on("prev-user-introduction", (userE: NUser) => {
+			setMyPeer({ ...userE });
+			console.log("I am reciever: Peer is ", userE.username);
 			setDidIWin(false);
 		});
 		socket.on("i-am-leaving", () => {
-			"peer left";
+			console.log("peer left");
 			setMyPeer(null);
 		});
 
-		const handleBeforeUnload = () =>
-			socket.emit("leave-room", { roomId, user });
-		window.addEventListener("beforeunload", handleBeforeUnload);
+		const beforeUnload = () => socket.emit("leave-room", roomId);
+		window.addEventListener("beforeunload", beforeUnload);
 		return () => {
 			socket.removeAllListeners();
-			window.removeEventListener("beforeunload", handleBeforeUnload);
+			window.removeEventListener("beforeunload", beforeUnload);
 		};
-	}, [registerRoom, room, roomId, setRoom, user]);
+	}, [roomId, user]);
 	return (
 		<section>
 			<p>
 				{myPeer ? myPeer.email + " : " + myPeer.username : "Nobody"} is here!
 			</p>
-			{room && room.roomId && room.Peer1 && room.Peer2 && (
-				<Streams didIWin={didIWin} />
-			)}
+			{myPeer && <Streams didIWin={didIWin} roomId={roomId} />}
 		</section>
 	);
 }
